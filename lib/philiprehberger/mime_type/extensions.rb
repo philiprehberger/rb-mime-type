@@ -1,0 +1,195 @@
+# frozen_string_literal: true
+
+module Philiprehberger
+  module MimeType
+    # Extension to MIME type mappings
+    EXTENSION_MAP = {
+      # Text
+      '.txt' => 'text/plain',
+      '.html' => 'text/html',
+      '.htm' => 'text/html',
+      '.css' => 'text/css',
+      '.csv' => 'text/csv',
+      '.tsv' => 'text/tab-separated-values',
+      '.xml' => 'text/xml',
+      '.rtf' => 'text/rtf',
+      '.md' => 'text/markdown',
+      '.yaml' => 'text/yaml',
+      '.yml' => 'text/yaml',
+      '.ics' => 'text/calendar',
+      '.vcf' => 'text/vcard',
+      '.vtt' => 'text/vtt',
+
+      # JavaScript / JSON
+      '.js' => 'text/javascript',
+      '.mjs' => 'text/javascript',
+      '.json' => 'application/json',
+      '.jsonld' => 'application/ld+json',
+      '.map' => 'application/json',
+
+      # Images
+      '.png' => 'image/png',
+      '.jpg' => 'image/jpeg',
+      '.jpeg' => 'image/jpeg',
+      '.gif' => 'image/gif',
+      '.bmp' => 'image/bmp',
+      '.ico' => 'image/x-icon',
+      '.svg' => 'image/svg+xml',
+      '.webp' => 'image/webp',
+      '.avif' => 'image/avif',
+      '.tiff' => 'image/tiff',
+      '.tif' => 'image/tiff',
+      '.heic' => 'image/heic',
+      '.heif' => 'image/heif',
+      '.jxl' => 'image/jxl',
+      '.apng' => 'image/apng',
+      '.psd' => 'image/vnd.adobe.photoshop',
+
+      # Audio
+      '.mp3' => 'audio/mpeg',
+      '.wav' => 'audio/wav',
+      '.ogg' => 'audio/ogg',
+      '.oga' => 'audio/ogg',
+      '.flac' => 'audio/flac',
+      '.aac' => 'audio/aac',
+      '.m4a' => 'audio/mp4',
+      '.wma' => 'audio/x-ms-wma',
+      '.opus' => 'audio/opus',
+      '.mid' => 'audio/midi',
+      '.midi' => 'audio/midi',
+      '.weba' => 'audio/webm',
+      '.aiff' => 'audio/aiff',
+
+      # Video
+      '.mp4' => 'video/mp4',
+      '.m4v' => 'video/mp4',
+      '.avi' => 'video/x-msvideo',
+      '.mov' => 'video/quicktime',
+      '.wmv' => 'video/x-ms-wmv',
+      '.flv' => 'video/x-flv',
+      '.webm' => 'video/webm',
+      '.mkv' => 'video/x-matroska',
+      '.ogv' => 'video/ogg',
+      '.mpeg' => 'video/mpeg',
+      '.mpg' => 'video/mpeg',
+      '.3gp' => 'video/3gpp',
+      '.3g2' => 'video/3gpp2',
+      '.ts' => 'video/mp2t',
+      '.m3u8' => 'application/vnd.apple.mpegurl',
+
+      # Application / Documents
+      '.pdf' => 'application/pdf',
+      '.doc' => 'application/msword',
+      '.docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      '.xls' => 'application/vnd.ms-excel',
+      '.xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      '.ppt' => 'application/vnd.ms-powerpoint',
+      '.pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      '.odt' => 'application/vnd.oasis.opendocument.text',
+      '.ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+      '.odp' => 'application/vnd.oasis.opendocument.presentation',
+      '.epub' => 'application/epub+zip',
+
+      # Archives
+      '.zip' => 'application/zip',
+      '.gz' => 'application/gzip',
+      '.gzip' => 'application/gzip',
+      '.tar' => 'application/x-tar',
+      '.bz2' => 'application/x-bzip2',
+      '.7z' => 'application/x-7z-compressed',
+      '.rar' => 'application/vnd.rar',
+      '.xz' => 'application/x-xz',
+      '.zst' => 'application/zstd',
+      '.lz' => 'application/x-lzip',
+      '.lzma' => 'application/x-lzma',
+      '.cab' => 'application/vnd.ms-cab-compressed',
+      '.dmg' => 'application/x-apple-diskimage',
+      '.iso' => 'application/x-iso9660-image',
+
+      # Executables / Binary
+      '.exe' => 'application/vnd.microsoft.portable-executable',
+      '.dll' => 'application/vnd.microsoft.portable-executable',
+      '.deb' => 'application/vnd.debian.binary-package',
+      '.rpm' => 'application/x-rpm',
+      '.msi' => 'application/x-msi',
+      '.apk' => 'application/vnd.android.package-archive',
+      '.jar' => 'application/java-archive',
+      '.war' => 'application/java-archive',
+      '.class' => 'application/java-vm',
+
+      # Fonts
+      '.woff' => 'font/woff',
+      '.woff2' => 'font/woff2',
+      '.ttf' => 'font/ttf',
+      '.otf' => 'font/otf',
+      '.eot' => 'application/vnd.ms-fontobject',
+
+      # Data / Config
+      '.sql' => 'application/sql',
+      '.sqlite' => 'application/vnd.sqlite3',
+      '.db' => 'application/octet-stream',
+      '.wasm' => 'application/wasm',
+      '.graphql' => 'application/graphql',
+      '.toml' => 'application/toml',
+
+      # Programming
+      '.rb' => 'text/x-ruby',
+      '.py' => 'text/x-python',
+      '.java' => 'text/x-java-source',
+      '.c' => 'text/x-c',
+      '.cpp' => 'text/x-c++',
+      '.h' => 'text/x-c',
+      '.hpp' => 'text/x-c++',
+      '.rs' => 'text/x-rust',
+      '.go' => 'text/x-go',
+      '.swift' => 'text/x-swift',
+      '.kt' => 'text/x-kotlin',
+      '.ts' => 'text/typescript',
+      '.tsx' => 'text/tsx',
+      '.jsx' => 'text/jsx',
+      '.php' => 'text/x-php',
+      '.sh' => 'application/x-sh',
+      '.bash' => 'application/x-sh',
+      '.bat' => 'application/x-msdos-program',
+      '.ps1' => 'application/x-powershell',
+      '.lua' => 'text/x-lua',
+      '.r' => 'text/x-r',
+      '.scala' => 'text/x-scala',
+      '.pl' => 'text/x-perl',
+      '.dart' => 'application/vnd.dart',
+      '.ex' => 'text/x-elixir',
+      '.erl' => 'text/x-erlang',
+      '.hs' => 'text/x-haskell',
+      '.clj' => 'text/x-clojure',
+      '.vim' => 'text/x-vim',
+      '.dockerfile' => 'text/x-dockerfile',
+
+      # Misc
+      '.swf' => 'application/x-shockwave-flash',
+      '.atom' => 'application/atom+xml',
+      '.rss' => 'application/rss+xml',
+      '.m3u' => 'audio/x-mpegurl',
+      '.pls' => 'audio/x-scpls',
+      '.torrent' => 'application/x-bittorrent',
+      '.bin' => 'application/octet-stream',
+      '.dat' => 'application/octet-stream',
+      '.crt' => 'application/x-x509-ca-cert',
+      '.pem' => 'application/x-pem-file',
+      '.p12' => 'application/x-pkcs12',
+      '.key' => 'application/x-pem-file',
+      '.asc' => 'application/pgp-signature',
+      '.gpg' => 'application/pgp-encrypted',
+      '.sig' => 'application/pgp-signature',
+      '.ics' => 'text/calendar',
+      '.eml' => 'message/rfc822',
+      '.mbox' => 'application/mbox',
+      '.xpi' => 'application/x-xpinstall',
+      '.crx' => 'application/x-chrome-extension'
+    }.freeze
+
+    # Reverse mapping: MIME type to extensions
+    MIME_TO_EXTENSIONS = EXTENSION_MAP.each_with_object({}) do |(ext, mime), hash|
+      (hash[mime] ||= []) << ext
+    end.freeze
+  end
+end
