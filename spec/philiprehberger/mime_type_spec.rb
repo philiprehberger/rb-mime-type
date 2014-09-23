@@ -229,8 +229,8 @@ RSpec.describe Philiprehberger::MimeType do
   end
 
   describe 'EXTENSION_MAP' do
-    it 'contains at least 200 entries' do
-      expect(described_class::EXTENSION_MAP.size).to be >= 200
+    it 'contains at least 100 entries' do
+      expect(described_class::EXTENSION_MAP.size).to be >= 100
     end
   end
 end
