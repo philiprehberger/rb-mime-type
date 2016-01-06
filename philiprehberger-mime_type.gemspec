@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ['philiprehberger']
   spec.email = ['philiprehberger@users.noreply.github.com']
 
-  spec.summary = 'MIME type detection from file extensions and magic bytes'
+  spec.summary = 'MIME type detection from file extensions and magic bytes with 200+ mappings'
   spec.description = 'Detect MIME types from file extensions, filenames, and binary content using magic ' \
                      'byte signatures. Includes 200+ extension mappings and 30+ magic byte patterns for ' \
                      'common file formats.'
