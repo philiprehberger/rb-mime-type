@@ -74,7 +74,7 @@ module Philiprehberger
       '.mpg' => 'video/mpeg',
       '.3gp' => 'video/3gpp',
       '.3g2' => 'video/3gpp2',
-      '.ts' => 'video/mp2t',
+      '.m2ts' => 'video/mp2t',
       '.m3u8' => 'application/vnd.apple.mpegurl',
 
       # Application / Documents
@@ -180,7 +180,6 @@ module Philiprehberger
       '.asc' => 'application/pgp-signature',
       '.gpg' => 'application/pgp-encrypted',
       '.sig' => 'application/pgp-signature',
-      '.ics' => 'text/calendar',
       '.eml' => 'message/rfc822',
       '.mbox' => 'application/mbox',
       '.xpi' => 'application/x-xpinstall',
