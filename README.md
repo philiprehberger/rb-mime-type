@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-mime_type.svg)](https://rubygems.org/gems/philiprehberger-mime_type)
 [![License](https://img.shields.io/github/license/philiprehberger/rb-mime-type)](LICENSE)
 
-MIME type detection from file extensions and magic bytes. Includes 200+ extension mappings and 30+ magic byte signatures for common file formats.
+MIME type detection from file extensions and magic bytes with 200+ mappings
 
 ## Requirements
 
