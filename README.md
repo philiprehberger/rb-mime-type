@@ -15,7 +15,7 @@ MIME type detection from file extensions and magic bytes with 200+ mappings
 Add to your Gemfile:
 
 ```ruby
-gem 'philiprehberger-mime_type'
+gem "philiprehberger-mime_type"
 ```
 
 Or install directly:
@@ -76,8 +76,8 @@ Philiprehberger::MimeType.valid?('not valid')      # => false
 
 ```bash
 bundle install
-bundle exec rspec      # Run tests
-bundle exec rubocop    # Check code style
+bundle exec rspec
+bundle exec rubocop
 ```
 
 ## License
