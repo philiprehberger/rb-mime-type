@@ -27,7 +27,7 @@ gem install philiprehberger-mime_type
 ## Usage
 
 ```ruby
-require 'philiprehberger/mime_type'
+require "philiprehberger/mime_type"
 
 Philiprehberger::MimeType.for_extension('.pdf')   # => "application/pdf"
 Philiprehberger::MimeType.for_filename('photo.jpg')  # => "image/jpeg"
