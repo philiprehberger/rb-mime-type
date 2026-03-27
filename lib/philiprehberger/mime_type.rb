@@ -89,7 +89,7 @@ module Philiprehberger
       type = mime.to_s.strip
       return false if type.empty?
 
-      type.match?(%r{\A[a-zA-Z0-9][a-zA-Z0-9!#{::Regexp.last_match(0)}\-^_.+]/[a-zA-Z0-9][a-zA-Z0-9!#{::Regexp.last_match(0)}\-^_.+]*\z})
+      type.match?(%r{\A[a-zA-Z0-9][a-zA-Z0-9!\#\$\-^_.+]*/[a-zA-Z0-9][a-zA-Z0-9!\#\$\-^_.+]*\z})
     end
   end
 end
