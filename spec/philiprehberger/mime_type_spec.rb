@@ -228,6 +228,209 @@ RSpec.describe Philiprehberger::MimeType do
     end
   end
 
+  describe '.register and .unregister' do
+    after do
+      described_class.unregister('.custom')
+      described_class.unregister('.override')
+    end
+
+    it 'registers a custom extension mapping' do
+      described_class.register('.custom', 'application/x-custom')
+      expect(described_class.for_extension('.custom')).to eq('application/x-custom')
+    end
+
+    it 'registers without leading dot' do
+      described_class.register('custom', 'application/x-custom')
+      expect(described_class.for_extension('custom')).to eq('application/x-custom')
+    end
+
+    it 'takes priority over built-in mappings' do
+      described_class.register('.override', 'application/x-override')
+      expect(described_class.for_extension('.override')).to eq('application/x-override')
+    end
+
+    it 'works with for_filename' do
+      described_class.register('.custom', 'application/x-custom')
+      expect(described_class.for_filename('file.custom')).to eq('application/x-custom')
+    end
+
+    it 'unregisters a custom mapping' do
+      described_class.register('.custom', 'application/x-custom')
+      described_class.unregister('.custom')
+      expect(described_class.for_extension('.custom')).to be_nil
+    end
+
+    it 'unregisters without leading dot' do
+      described_class.register('custom', 'application/x-custom')
+      described_class.unregister('custom')
+      expect(described_class.for_extension('.custom')).to be_nil
+    end
+
+    it 'overrides built-in and restores on unregister' do
+      original = described_class.for_extension('.json')
+      described_class.register('.json', 'application/x-custom-json')
+      expect(described_class.for_extension('.json')).to eq('application/x-custom-json')
+      described_class.unregister('.json')
+      expect(described_class.for_extension('.json')).to eq(original)
+    end
+  end
+
+  describe '.charset' do
+    it 'returns utf-8 for text/plain' do
+      expect(described_class.charset('text/plain')).to eq('utf-8')
+    end
+
+    it 'returns utf-8 for text/html' do
+      expect(described_class.charset('text/html')).to eq('utf-8')
+    end
+
+    it 'returns nil for application/json' do
+      expect(described_class.charset('application/json')).to be_nil
+    end
+
+    it 'returns nil for image/png' do
+      expect(described_class.charset('image/png')).to be_nil
+    end
+
+    it 'returns nil for empty string' do
+      expect(described_class.charset('')).to be_nil
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.charset('TEXT/HTML')).to eq('utf-8')
+    end
+  end
+
+  describe '.text?' do
+    it 'returns true for text/plain' do
+      expect(described_class.text?('text/plain')).to be true
+    end
+
+    it 'returns true for text/html' do
+      expect(described_class.text?('text/html')).to be true
+    end
+
+    it 'returns false for application/json' do
+      expect(described_class.text?('application/json')).to be false
+    end
+
+    it 'returns false for image/png' do
+      expect(described_class.text?('image/png')).to be false
+    end
+
+    it 'returns false for empty string' do
+      expect(described_class.text?('')).to be false
+    end
+  end
+
+  describe '.binary?' do
+    it 'returns true for application/pdf' do
+      expect(described_class.binary?('application/pdf')).to be true
+    end
+
+    it 'returns true for image/png' do
+      expect(described_class.binary?('image/png')).to be true
+    end
+
+    it 'returns false for text/plain' do
+      expect(described_class.binary?('text/plain')).to be false
+    end
+
+    it 'returns false for text/html' do
+      expect(described_class.binary?('text/html')).to be false
+    end
+
+    it 'returns false for empty string' do
+      expect(described_class.binary?('')).to be false
+    end
+  end
+
+  describe '.parse_accept' do
+    it 'parses a simple Accept header' do
+      result = described_class.parse_accept('text/html')
+      expect(result).to eq([{ type: 'text/html', q: 1.0 }])
+    end
+
+    it 'parses multiple types' do
+      result = described_class.parse_accept('text/html, application/json')
+      expect(result.length).to eq(2)
+      expect(result[0][:type]).to eq('text/html')
+      expect(result[1][:type]).to eq('application/json')
+    end
+
+    it 'parses quality factors' do
+      result = described_class.parse_accept('text/html;q=0.9, application/json;q=1.0')
+      expect(result[0]).to eq({ type: 'application/json', q: 1.0 })
+      expect(result[1]).to eq({ type: 'text/html', q: 0.9 })
+    end
+
+    it 'defaults quality to 1.0' do
+      result = described_class.parse_accept('text/html')
+      expect(result[0][:q]).to eq(1.0)
+    end
+
+    it 'handles wildcard */*' do
+      result = described_class.parse_accept('*/*')
+      expect(result).to eq([{ type: '*/*', q: 1.0 }])
+    end
+
+    it 'handles type/* wildcard' do
+      result = described_class.parse_accept('text/*;q=0.5, application/json')
+      expect(result[0]).to eq({ type: 'application/json', q: 1.0 })
+      expect(result[1]).to eq({ type: 'text/*', q: 0.5 })
+    end
+
+    it 'sorts by quality descending' do
+      result = described_class.parse_accept('text/plain;q=0.1, text/html;q=0.5, application/json;q=0.9')
+      expect(result.map { |e| e[:q] }).to eq([0.9, 0.5, 0.1])
+    end
+
+    it 'returns empty array for nil' do
+      expect(described_class.parse_accept(nil)).to eq([])
+    end
+
+    it 'returns empty array for empty string' do
+      expect(described_class.parse_accept('')).to eq([])
+    end
+  end
+
+  describe '.best_match' do
+    let(:available) { ['application/json', 'text/html', 'text/plain'] }
+
+    it 'returns exact match' do
+      expect(described_class.best_match(available, 'application/json')).to eq('application/json')
+    end
+
+    it 'returns highest quality match' do
+      expect(described_class.best_match(available, 'text/html;q=0.5, application/json;q=0.9')).to eq('application/json')
+    end
+
+    it 'returns first available for */*' do
+      expect(described_class.best_match(available, '*/*')).to eq('application/json')
+    end
+
+    it 'returns type/* wildcard match' do
+      expect(described_class.best_match(available, 'text/*')).to eq('text/html')
+    end
+
+    it 'returns nil when no match' do
+      expect(described_class.best_match(available, 'image/png')).to be_nil
+    end
+
+    it 'returns nil for empty available list' do
+      expect(described_class.best_match([], 'text/html')).to be_nil
+    end
+
+    it 'returns nil for nil available list' do
+      expect(described_class.best_match(nil, 'text/html')).to be_nil
+    end
+
+    it 'respects quality ordering' do
+      result = described_class.best_match(available, 'text/plain;q=0.1, text/html;q=0.9')
+      expect(result).to eq('text/html')
+    end
+  end
+
   describe 'EXTENSION_MAP' do
     it 'contains at least 100 entries' do
       expect(described_class::EXTENSION_MAP.size).to be >= 100

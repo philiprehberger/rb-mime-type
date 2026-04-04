@@ -8,6 +8,29 @@ module Philiprehberger
   module MimeType
     class Error < StandardError; end
 
+    @custom_extensions = {}
+
+    # Register a custom MIME type mapping for an extension
+    #
+    # @param ext [String] file extension (with or without leading dot)
+    # @param mime_type [String] MIME type string
+    # @return [void]
+    def self.register(ext, mime_type)
+      normalized = ext.to_s.strip.downcase
+      normalized = ".#{normalized}" unless normalized.start_with?('.')
+      @custom_extensions[normalized] = mime_type
+    end
+
+    # Remove a custom registration for an extension
+    #
+    # @param ext [String] file extension (with or without leading dot)
+    # @return [void]
+    def self.unregister(ext)
+      normalized = ext.to_s.strip.downcase
+      normalized = ".#{normalized}" unless normalized.start_with?('.')
+      @custom_extensions.delete(normalized)
+    end
+
     # Detect MIME type from a file extension
     #
     # @param ext [String] file extension (with or without leading dot)
@@ -15,7 +38,7 @@ module Philiprehberger
     def self.for_extension(ext)
       normalized = ext.to_s.strip.downcase
       normalized = ".#{normalized}" unless normalized.start_with?('.')
-      EXTENSION_MAP[normalized]
+      @custom_extensions[normalized] || EXTENSION_MAP[normalized]
     end
 
     # Detect MIME type from a filename
@@ -26,7 +49,7 @@ module Philiprehberger
       ext = File.extname(name.to_s.strip).downcase
       return nil if ext.empty?
 
-      EXTENSION_MAP[ext]
+      @custom_extensions[ext] || EXTENSION_MAP[ext]
     end
 
     # Detect MIME type from file content using magic bytes
@@ -90,6 +113,92 @@ module Philiprehberger
       return false if type.empty?
 
       type.match?(%r{\A[a-zA-Z0-9][a-zA-Z0-9!\#$\-^_.+]*/[a-zA-Z0-9][a-zA-Z0-9!\#$\-^_.+]*\z})
+    end
+
+    # Return the default charset for a MIME type
+    #
+    # @param mime [String] MIME type
+    # @return [String, nil] "utf-8" for text types, nil for binary types
+    def self.charset(mime)
+      type = mime.to_s.strip.downcase
+      return nil if type.empty?
+
+      type.start_with?('text/') ? 'utf-8' : nil
+    end
+
+    # Check if a MIME type is a text type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for text/* MIME types
+    def self.text?(mime)
+      mime.to_s.strip.downcase.start_with?('text/')
+    end
+
+    # Check if a MIME type is a binary (non-text) type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for non-text MIME types
+    def self.binary?(mime)
+      type = mime.to_s.strip.downcase
+      return false if type.empty?
+
+      !type.start_with?('text/')
+    end
+
+    # Parse an HTTP Accept header string
+    #
+    # @param header [String] Accept header value
+    # @return [Array<Hash>] array of { type: String, q: Float } sorted by quality descending
+    def self.parse_accept(header)
+      return [] if header.nil? || header.strip.empty?
+
+      entries = header.split(',').map do |part|
+        segments = part.strip.split(';').map(&:strip)
+        type = segments.first
+        q = 1.0
+
+        segments[1..].each do |param|
+          key, value = param.split('=', 2).map(&:strip)
+          if key == 'q'
+            q = value.to_f
+          end
+        end
+
+        { type: type, q: q }
+      end
+
+      entries.sort_by { |e| -e[:q] }
+    end
+
+    # Content negotiation: find the best matching MIME type
+    #
+    # @param available [Array<String>] available MIME types
+    # @param accept_header [String] Accept header value
+    # @return [String, nil] best matching MIME type or nil
+    def self.best_match(available, accept_header)
+      return nil if available.nil? || available.empty?
+
+      parsed = parse_accept(accept_header)
+      return nil if parsed.empty?
+
+      parsed.each do |entry|
+        accepted = entry[:type]
+
+        if accepted == '*/*'
+          return available.first
+        end
+
+        # Check for type/* wildcard
+        if accepted.end_with?('/*')
+          prefix = accepted.split('/').first
+          match = available.find { |a| a.start_with?("#{prefix}/") }
+          return match if match
+        elsif available.include?(accepted)
+          return accepted
+        end
+      end
+
+      nil
     end
   end
 end

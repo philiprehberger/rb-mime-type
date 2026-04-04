@@ -61,6 +61,45 @@ Philiprehberger::MimeType.valid?('text/plain')     # => true
 Philiprehberger::MimeType.valid?('not valid')      # => false
 ```
 
+### Custom Registration
+
+```ruby
+Philiprehberger::MimeType.register('.custom', 'application/x-custom')
+Philiprehberger::MimeType.for_extension('.custom')  # => "application/x-custom"
+
+Philiprehberger::MimeType.unregister('.custom')
+Philiprehberger::MimeType.for_extension('.custom')  # => nil
+```
+
+### Charset Detection
+
+```ruby
+Philiprehberger::MimeType.charset('text/html')        # => "utf-8"
+Philiprehberger::MimeType.charset('application/json')  # => nil
+```
+
+### Type Predicates
+
+```ruby
+Philiprehberger::MimeType.text?('text/plain')       # => true
+Philiprehberger::MimeType.binary?('image/png')      # => true
+```
+
+### Accept Header Parsing
+
+```ruby
+Philiprehberger::MimeType.parse_accept('text/html;q=0.9, application/json')
+# => [{ type: "application/json", q: 1.0 }, { type: "text/html", q: 0.9 }]
+```
+
+### Content Negotiation
+
+```ruby
+available = ['application/json', 'text/html']
+Philiprehberger::MimeType.best_match(available, 'text/*;q=0.5, application/json')
+# => "application/json"
+```
+
 ## API
 
 | Method | Description |
@@ -71,6 +110,13 @@ Philiprehberger::MimeType.valid?('not valid')      # => false
 | `MimeType.extensions(mime)` | Get file extensions for a MIME type |
 | `MimeType.category(mime)` | Get the category of a MIME type |
 | `MimeType.valid?(mime)` | Check if a MIME type string is valid |
+| `MimeType.register(ext, mime)` | Register a custom MIME type mapping |
+| `MimeType.unregister(ext)` | Remove a custom registration |
+| `MimeType.charset(mime)` | Get default charset for a MIME type |
+| `MimeType.parse_accept(header)` | Parse HTTP Accept header string |
+| `MimeType.best_match(available, header)` | Content negotiation for best match |
+| `MimeType.text?(mime)` | Check if MIME type is text |
+| `MimeType.binary?(mime)` | Check if MIME type is binary |
 
 ## Development
 

@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'MIME type detection from file extensions and magic bytes with 200+ mappings'
   spec.description = 'Detect MIME types from file extensions, filenames, and binary content using magic ' \
-                     'byte signatures. Includes 200+ extension mappings and 30+ magic byte patterns for ' \
-                     'common file formats.'
+                     'byte signatures. Includes 200+ extension mappings, 30+ magic byte patterns, custom ' \
+                     'registration, charset detection, Accept header parsing, and content negotiation.'
   spec.homepage = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-mime_type'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1'

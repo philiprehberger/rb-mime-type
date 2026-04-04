@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-03
+
+### Added
+- Add `MimeType.register(extension, mime_type)` for custom MIME type registration
+- Add `MimeType.unregister(extension)` to remove custom registrations
+- Add `MimeType.charset(mime)` for default charset detection (utf-8 for text types)
+- Add `MimeType.parse_accept(header)` for HTTP Accept header parsing with quality factors
+- Add `MimeType.best_match(available, accept_header)` for content negotiation
+- Add `MimeType.text?(mime)` predicate for text MIME types
+- Add `MimeType.binary?(mime)` predicate for non-text MIME types
+
 ## [0.1.6] - 2026-03-31
 
 ### Added
