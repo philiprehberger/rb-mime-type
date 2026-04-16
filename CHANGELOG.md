@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-16
+
+### Added
+- Category predicates: `image?`, `text?`, `audio?`, `video?`, `application?`, `font?`, `multipart?`, `message?`
+
+### Changed
+- `required_ruby_version` tightened to `'>= 3.1.0'` to match the Ruby package guide
+
 ## [0.2.0] - 2026-04-03
 
 ### Added
