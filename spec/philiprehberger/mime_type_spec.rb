@@ -431,6 +431,104 @@ RSpec.describe Philiprehberger::MimeType do
     end
   end
 
+  describe 'category predicates' do
+    describe '.image?' do
+      it 'returns true for image/png' do
+        expect(described_class.image?('image/png')).to be true
+      end
+
+      it 'returns false for audio/mpeg' do
+        expect(described_class.image?('audio/mpeg')).to be false
+      end
+
+      it 'returns false for nil' do
+        expect(described_class.image?(nil)).to be false
+      end
+
+      it 'is case insensitive' do
+        expect(described_class.image?('IMAGE/PNG')).to be true
+      end
+    end
+
+    describe '.text?' do
+      it 'returns true for text/html' do
+        expect(described_class.text?('text/html')).to be true
+      end
+
+      it 'strips trailing parameters' do
+        expect(described_class.text?('text/html; charset=utf-8')).to be true
+      end
+
+      it 'returns false for nil' do
+        expect(described_class.text?(nil)).to be false
+      end
+    end
+
+    describe '.audio?' do
+      it 'returns true for audio/mpeg' do
+        expect(described_class.audio?('audio/mpeg')).to be true
+      end
+
+      it 'returns false for image/png' do
+        expect(described_class.audio?('image/png')).to be false
+      end
+
+      it 'returns false for nil' do
+        expect(described_class.audio?(nil)).to be false
+      end
+    end
+
+    describe '.video?' do
+      it 'returns true for video/mp4' do
+        expect(described_class.video?('video/mp4')).to be true
+      end
+
+      it 'returns false for nil' do
+        expect(described_class.video?(nil)).to be false
+      end
+    end
+
+    describe '.application?' do
+      it 'returns true for application/json' do
+        expect(described_class.application?('application/json')).to be true
+      end
+
+      it 'returns false for nil' do
+        expect(described_class.application?(nil)).to be false
+      end
+    end
+
+    describe '.font?' do
+      it 'returns true for font/woff2' do
+        expect(described_class.font?('font/woff2')).to be true
+      end
+
+      it 'returns false for nil' do
+        expect(described_class.font?(nil)).to be false
+      end
+    end
+
+    describe '.multipart?' do
+      it 'returns true for multipart/form-data' do
+        expect(described_class.multipart?('multipart/form-data')).to be true
+      end
+
+      it 'returns false for nil' do
+        expect(described_class.multipart?(nil)).to be false
+      end
+    end
+
+    describe '.message?' do
+      it 'returns true for message/rfc822' do
+        expect(described_class.message?('message/rfc822')).to be true
+      end
+
+      it 'returns false for nil' do
+        expect(described_class.message?(nil)).to be false
+      end
+    end
+  end
+
   describe 'EXTENSION_MAP' do
     it 'contains at least 100 entries' do
       expect(described_class::EXTENSION_MAP.size).to be >= 100

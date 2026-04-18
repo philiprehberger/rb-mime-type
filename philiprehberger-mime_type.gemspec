@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
                      'registration, charset detection, Accept header parsing, and content negotiation.'
   spec.homepage = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-mime_type'
   spec.license = 'MIT'
-  spec.required_ruby_version = '>= 3.1'
+  spec.required_ruby_version = '>= 3.1.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/philiprehberger/rb-mime-type'

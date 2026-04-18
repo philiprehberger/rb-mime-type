@@ -85,6 +85,20 @@ Philiprehberger::MimeType.text?('text/plain')       # => true
 Philiprehberger::MimeType.binary?('image/png')      # => true
 ```
 
+### Category Predicates
+
+```ruby
+Philiprehberger::MimeType.image?('image/png')                   # => true
+Philiprehberger::MimeType.text?('text/html; charset=utf-8')     # => true
+Philiprehberger::MimeType.audio?('audio/mpeg')                  # => true
+Philiprehberger::MimeType.video?('video/mp4')                   # => true
+Philiprehberger::MimeType.application?('application/json')       # => true
+Philiprehberger::MimeType.font?('font/woff2')                   # => true
+Philiprehberger::MimeType.multipart?('multipart/form-data')      # => true
+Philiprehberger::MimeType.message?('message/rfc822')             # => true
+Philiprehberger::MimeType.image?(nil)                           # => false
+```
+
 ### Accept Header Parsing
 
 ```ruby
@@ -117,6 +131,13 @@ Philiprehberger::MimeType.best_match(available, 'text/*;q=0.5, application/json'
 | `MimeType.best_match(available, header)` | Content negotiation for best match |
 | `MimeType.text?(mime)` | Check if MIME type is text |
 | `MimeType.binary?(mime)` | Check if MIME type is binary |
+| `MimeType.image?(mime)` | Check if MIME type is `image/*` |
+| `MimeType.audio?(mime)` | Check if MIME type is `audio/*` |
+| `MimeType.video?(mime)` | Check if MIME type is `video/*` |
+| `MimeType.application?(mime)` | Check if MIME type is `application/*` |
+| `MimeType.font?(mime)` | Check if MIME type is `font/*` |
+| `MimeType.multipart?(mime)` | Check if MIME type is `multipart/*` |
+| `MimeType.message?(mime)` | Check if MIME type is `message/*` |
 
 ## Development
 

@@ -131,7 +131,63 @@ module Philiprehberger
     # @param mime [String] MIME type
     # @return [Boolean] true for text/* MIME types
     def self.text?(mime)
-      mime.to_s.strip.downcase.start_with?('text/')
+      category_prefix?(mime, 'text')
+    end
+
+    # Check if a MIME type is an image type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for image/* MIME types
+    def self.image?(mime)
+      category_prefix?(mime, 'image')
+    end
+
+    # Check if a MIME type is an audio type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for audio/* MIME types
+    def self.audio?(mime)
+      category_prefix?(mime, 'audio')
+    end
+
+    # Check if a MIME type is a video type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for video/* MIME types
+    def self.video?(mime)
+      category_prefix?(mime, 'video')
+    end
+
+    # Check if a MIME type is an application type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for application/* MIME types
+    def self.application?(mime)
+      category_prefix?(mime, 'application')
+    end
+
+    # Check if a MIME type is a font type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for font/* MIME types
+    def self.font?(mime)
+      category_prefix?(mime, 'font')
+    end
+
+    # Check if a MIME type is a multipart type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for multipart/* MIME types
+    def self.multipart?(mime)
+      category_prefix?(mime, 'multipart')
+    end
+
+    # Check if a MIME type is a message type
+    #
+    # @param mime [String] MIME type
+    # @return [Boolean] true for message/* MIME types
+    def self.message?(mime)
+      category_prefix?(mime, 'message')
     end
 
     # Check if a MIME type is a binary (non-text) type
@@ -200,5 +256,21 @@ module Philiprehberger
 
       nil
     end
+
+    # Check whether a MIME type string starts with the given top-level type.
+    # Handles nil, trailing parameters (e.g. "; charset=utf-8"), and casing.
+    #
+    # @param mime [String, nil] MIME type
+    # @param prefix [String] top-level type (e.g. "image", "text")
+    # @return [Boolean]
+    def self.category_prefix?(mime, prefix)
+      return false if mime.nil?
+
+      type = mime.to_s.split(';').first.to_s.strip.downcase
+      return false if type.empty?
+
+      type.start_with?("#{prefix}/")
+    end
+    private_class_method :category_prefix?
   end
 end
