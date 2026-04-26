@@ -40,6 +40,17 @@ content = File.binread('image.png', 16)
 Philiprehberger::MimeType.for_content(content)  # => "image/png"
 ```
 
+Modern image formats are also detected via the ISOBMFF `ftyp` brand: HEIC, HEIF, AVIF, and JPEG XL.
+
+### MIME Aliases
+
+```ruby
+require "philiprehberger/mime_type"
+
+Philiprehberger::MimeType.canonical('image/jpg')  # => "image/jpeg"
+Philiprehberger::MimeType.valid?('image/jpg')     # => true
+```
+
 ### Reverse Lookup
 
 ```ruby
@@ -124,6 +135,7 @@ Philiprehberger::MimeType.best_match(available, 'text/*;q=0.5, application/json'
 | `MimeType.extensions(mime)` | Get file extensions for a MIME type |
 | `MimeType.category(mime)` | Get the category of a MIME type |
 | `MimeType.valid?(mime)` | Check if a MIME type string is valid |
+| `MimeType.canonical(mime)` | Map legacy/alias MIME types to their canonical form |
 | `MimeType.register(ext, mime)` | Register a custom MIME type mapping |
 | `MimeType.unregister(ext)` | Remove a custom registration |
 | `MimeType.charset(mime)` | Get default charset for a MIME type |

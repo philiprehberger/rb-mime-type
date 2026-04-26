@@ -139,6 +139,36 @@ RSpec.describe Philiprehberger::MimeType do
       expect(described_class.for_content(bytes)).to eq('application/wasm')
     end
 
+    it 'detects HEIC via ISOBMFF ftyp brand' do
+      bytes = "\x00\x00\x00\x20ftypheic\x00\x00\x00\x00mif1heic"
+      expect(described_class.for_content(bytes)).to eq('image/heic')
+    end
+
+    it 'detects HEIC via the heix brand' do
+      bytes = "\x00\x00\x00\x20ftypheix\x00\x00\x00\x00mif1heix"
+      expect(described_class.for_content(bytes)).to eq('image/heic')
+    end
+
+    it 'detects HEIF via the mif1 brand' do
+      bytes = "\x00\x00\x00\x20ftypmif1\x00\x00\x00\x00mif1heic"
+      expect(described_class.for_content(bytes)).to eq('image/heif')
+    end
+
+    it 'detects AVIF via ISOBMFF ftyp brand' do
+      bytes = "\x00\x00\x00\x20ftypavif\x00\x00\x00\x00mif1avif"
+      expect(described_class.for_content(bytes)).to eq('image/avif')
+    end
+
+    it 'detects JPEG XL via the JXL codestream signature' do
+      bytes = [0xFF, 0x0A, 0x00, 0x00].pack('C*')
+      expect(described_class.for_content(bytes)).to eq('image/jxl')
+    end
+
+    it 'detects JPEG XL via the ISOBMFF ftyp brand' do
+      bytes = "\x00\x00\x00\x20ftypjxl \x00\x00\x00\x00jxl "
+      expect(described_class.for_content(bytes)).to eq('image/jxl')
+    end
+
     it 'returns nil for empty content' do
       expect(described_class.for_content('')).to be_nil
     end
@@ -215,6 +245,10 @@ RSpec.describe Philiprehberger::MimeType do
       expect(described_class.valid?('application/json+ld')).to be true
     end
 
+    it 'returns true for known aliases' do
+      expect(described_class.valid?('image/jpg')).to be true
+    end
+
     it 'returns false for empty string' do
       expect(described_class.valid?('')).to be false
     end
@@ -225,6 +259,36 @@ RSpec.describe Philiprehberger::MimeType do
 
     it 'returns false for string with spaces' do
       expect(described_class.valid?('text/ plain')).to be false
+    end
+  end
+
+  describe '.canonical' do
+    it 'maps image/jpg to image/jpeg' do
+      expect(described_class.canonical('image/jpg')).to eq('image/jpeg')
+    end
+
+    it 'maps text/xml to application/xml' do
+      expect(described_class.canonical('text/xml')).to eq('application/xml')
+    end
+
+    it 'maps application/x-javascript to text/javascript' do
+      expect(described_class.canonical('application/x-javascript')).to eq('text/javascript')
+    end
+
+    it 'maps audio/mp3 to audio/mpeg' do
+      expect(described_class.canonical('audio/mp3')).to eq('audio/mpeg')
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.canonical('IMAGE/JPG')).to eq('image/jpeg')
+    end
+
+    it 'returns the lowercased input when no alias is known' do
+      expect(described_class.canonical('image/png')).to eq('image/png')
+    end
+
+    it 'returns nil for nil input' do
+      expect(described_class.canonical(nil)).to be_nil
     end
   end
 

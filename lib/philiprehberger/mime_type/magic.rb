@@ -14,7 +14,7 @@ module Philiprehberger
       [0, [0x00, 0x00, 0x01, 0x00], 'image/x-icon'],
       [0, [0x00, 0x00, 0x02, 0x00], 'image/x-icon'],
       [8, [0x57, 0x45, 0x42, 0x50], 'image/webp'],
-      [4, [0x66, 0x74, 0x79, 0x70, 0x68, 0x65, 0x69, 0x63], 'image/heic'],
+      [0, [0xFF, 0x0A], 'image/jxl'],
       [0, [0x49, 0x49, 0x2A, 0x00], 'image/tiff'],
       [0, [0x4D, 0x4D, 0x00, 0x2A], 'image/tiff'],
 
@@ -66,5 +66,16 @@ module Philiprehberger
       # SQLite
       [0, [0x53, 0x51, 0x4C, 0x69, 0x74, 0x65, 0x20, 0x66, 0x6F, 0x72, 0x6D, 0x61, 0x74], 'application/vnd.sqlite3']
     ].freeze
+
+    # ISOBMFF `ftyp` brand → MIME type. The brand occupies bytes 8..11 of an
+    # ISO base media file format box; bytes 4..7 always contain "ftyp".
+    ISOBMFF_BRANDS = {
+      'heic' => 'image/heic',
+      'heix' => 'image/heic',
+      'heis' => 'image/heic',
+      'mif1' => 'image/heif',
+      'avif' => 'image/avif',
+      'jxl ' => 'image/jxl'
+    }.freeze
   end
 end

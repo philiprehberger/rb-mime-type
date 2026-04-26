@@ -5,8 +5,8 @@ require_relative 'lib/philiprehberger/mime_type/version'
 Gem::Specification.new do |spec|
   spec.name = 'philiprehberger-mime_type'
   spec.version = Philiprehberger::MimeType::VERSION
-  spec.authors = ['philiprehberger']
-  spec.email = ['philiprehberger@users.noreply.github.com']
+  spec.authors = ['Philip Rehberger']
+  spec.email = ['me@philiprehberger.com']
 
   spec.summary = 'MIME type detection from file extensions and magic bytes with 200+ mappings'
   spec.description = 'Detect MIME types from file extensions, filenames, and binary content using magic ' \

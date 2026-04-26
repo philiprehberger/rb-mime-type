@@ -8,7 +8,33 @@ module Philiprehberger
   module MimeType
     class Error < StandardError; end
 
+    # Maps legacy / non-standard MIME types to their canonical form.
+    ALIASES = {
+      'image/jpg' => 'image/jpeg',
+      'image/pjpeg' => 'image/jpeg',
+      'image/x-png' => 'image/png',
+      'application/x-javascript' => 'text/javascript',
+      'application/javascript' => 'text/javascript',
+      'text/xml' => 'application/xml',
+      'application/x-yaml' => 'application/yaml',
+      'text/yaml' => 'application/yaml',
+      'audio/mp3' => 'audio/mpeg'
+    }.freeze
+
     @custom_extensions = {}
+
+    # Returns the canonical MIME type for `mime`. Legacy or non-standard aliases
+    # (e.g. `image/jpg`) are mapped to their canonical form (`image/jpeg`). Any
+    # input that is not a known alias is returned unchanged after lowercasing.
+    #
+    # @param mime [String]
+    # @return [String]
+    def self.canonical(mime)
+      return mime if mime.nil?
+
+      normalized = mime.to_s.downcase
+      ALIASES.fetch(normalized, normalized)
+    end
 
     # Register a custom MIME type mapping for an extension
     #
@@ -71,8 +97,21 @@ module Philiprehberger
         return mime if match
       end
 
-      nil
+      isobmff_mime_for(raw)
     end
+
+    # Detect ISOBMFF-based formats (HEIC/HEIF/AVIF/JXL/MP4 variants) by
+    # inspecting the `ftyp` brand at bytes 8..11.
+    #
+    # @param raw [String] binary content (ASCII-8BIT)
+    # @return [String, nil]
+    def self.isobmff_mime_for(raw)
+      return nil if raw.length < 12
+      return nil unless raw.byteslice(4, 4) == 'ftyp'
+
+      ISOBMFF_BRANDS[raw.byteslice(8, 4)]
+    end
+    private_class_method :isobmff_mime_for
 
     # Get file extensions for a MIME type
     #
@@ -112,7 +151,8 @@ module Philiprehberger
       type = mime.to_s.strip
       return false if type.empty?
 
-      type.match?(%r{\A[a-zA-Z0-9][a-zA-Z0-9!\#$\-^_.+]*/[a-zA-Z0-9][a-zA-Z0-9!\#$\-^_.+]*\z})
+      canonical_type = canonical(type)
+      canonical_type.match?(%r{\A[a-zA-Z0-9][a-zA-Z0-9!\#$\-^_.+]*/[a-zA-Z0-9][a-zA-Z0-9!\#$\-^_.+]*\z})
     end
 
     # Return the default charset for a MIME type

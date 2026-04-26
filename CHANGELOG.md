@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-25
+
+### Added
+- `MimeType.canonical(mime)` mapping legacy MIME aliases (`image/jpg`, `text/xml`, `application/x-javascript`, ...) to their canonical form
+- `MimeType.valid?` now accepts known aliases
+- Magic-byte detection for HEIC, HEIF, AVIF, and JPEG XL via ISOBMFF `ftyp` brand inspection
+
+### Fixed
+- Gemspec author/email metadata now match the standardized values
+
 ## [0.3.0] - 2026-04-16
 
 ### Added
